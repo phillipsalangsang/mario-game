@@ -48,7 +48,7 @@ const levelCfg = {
     '(': [sprite('pipe-bottom-left'), solid()],
     ')': [sprite('pipe-bottom-right'), solid()],
     '-': [sprite('pipe-top-left'), solid()],
-    '+': [sprite('pop-top-right'), solid()],
+    '+': [sprite('pipe-top-right'), solid()],
 }
 
 const gameLevel = addLevel(map, levelCfg)
