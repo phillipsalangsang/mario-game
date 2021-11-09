@@ -6,6 +6,9 @@ kaboom({
     clearColor: [0, 0, 0, 1],
 })
 
+const MOVE_SPEED = 120
+const JUMP_FORCE = 10
+
 loadRoot('https://i.imgur.com/')
 loadSprite('coin', 'wbKxhcd.png')
 loadSprite('evil-shroom', 'KPO3fR9.png')
@@ -32,7 +35,7 @@ const map = [
     '                                      ',
     '       %   =*=%=                      ',
     '                                      ',
-    '                            -+        ',
+    '                           -+         ',
     '                  ^    ^   ()         ',
     '==============================   =====',
 ]
@@ -45,13 +48,47 @@ const levelCfg = {
     '%': [sprite('surprise'), solid(), 'coin-surprise'],
     '*': [sprite('surprise'), solid(), 'mushroom-surprise'],
     '}': [sprite('unboxed'), solid()],
-    '(': [sprite('pipe-bottom-left'), solid()],
-    ')': [sprite('pipe-bottom-right'), solid()],
-    '-': [sprite('pipe-top-left'), solid()],
-    '+': [sprite('pipe-top-right'), solid()],
+    '(': [sprite('pipe-bottom-left'), solid(), scale(0.5)],
+    ')': [sprite('pipe-bottom-right'), solid(), scale(0.5)],
+    '-': [sprite('pipe-top-left'), solid(), scale(0.5)],
+    '+': [sprite('pipe-top-right'), solid(), scale(0.5)],
+    '^': [sprite('evil-shroom'), solid()],
+    '#': [sprite('mushroom'), solid()],
 }
 
 const gameLevel = addLevel(map, levelCfg)
+
+const scoreLabel = add([
+  text('score'),
+  pos(30, 6),
+  layer('ui'),
+  {
+      value:'score',
+  }  
+])
+
+add([text('level' + 'test', pos(4,6))])
+
+const player = add([
+    sprite('mario'), solid(),
+    pos(30, 0),
+    body(),
+    origin('bot')
+])
+
+keyDown('left', () => {
+    player.move(-MOVE_SPEED, 0)
+})
+
+keyDown('right', () => {
+    player.move(-MOVE_SPEED, 0)
+})
+
+keyPress('space', () => {
+    if (player.grounded()) {
+      player.jump(JUMP_FORCE)  
+    }
+})
 
 })
 
