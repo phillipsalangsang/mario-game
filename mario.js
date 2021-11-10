@@ -7,7 +7,7 @@ kaboom({
 })
 
 const MOVE_SPEED = 120
-const JUMP_FORCE = 10
+const JUMP_FORCE = 360
 
 loadRoot('https://i.imgur.com/')
 loadSprite('coin', 'wbKxhcd.png')
@@ -43,7 +43,7 @@ const map = [
 const levelCfg = {
     width: 20,
     height: 20,
-    '=': [sprite('block', solid())],
+    '=': [sprite('block'), solid()],
     '$': [sprite('coin')],
     '%': [sprite('surprise'), solid(), 'coin-surprise'],
     '*': [sprite('surprise'), solid(), 'mushroom-surprise'],
@@ -69,10 +69,39 @@ const scoreLabel = add([
 
 add([text('level' + 'test', pos(4,6))])
 
+function big() {
+    let tiner = 0
+    let isBig = false
+    return {
+        update() {
+            if (isBig){
+                timer -=dt() //delte timeframe (kaboom)
+                if (timer <= 0) {
+                    this.smallify()
+                }
+            }
+        },
+        isBig() {
+            return isBig
+        },
+        smallify() {
+            this.scale = vec2(1)
+            timer = 0
+            isBig = false
+        },
+        biggify (time) {
+            this.scale = vec2(2) //vector
+            timer = time
+            isBig = true
+        }
+    }
+}
+
 const player = add([
     sprite('mario'), solid(),
     pos(30, 0),
     body(),
+    big(),
     origin('bot')
 ])
 
@@ -81,7 +110,7 @@ keyDown('left', () => {
 })
 
 keyDown('right', () => {
-    player.move(-MOVE_SPEED, 0)
+    player.move(MOVE_SPEED, 0)
 })
 
 keyPress('space', () => {
@@ -93,4 +122,8 @@ keyPress('space', () => {
 })
 
 start("game")
+
+
+
+
 
