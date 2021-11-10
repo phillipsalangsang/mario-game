@@ -1,7 +1,7 @@
 kaboom({
     global: true,
     fullscreen: true,
-    scale: 1,
+    scale: 2,
     debug: true,
     clearColor: [0, 0, 0, 1],
 })
@@ -27,7 +27,7 @@ loadSprite('pipe-top-right', 'hj2GK4n.png')
 loadSprite('pipe-bottom-left', 'c1cYSbt.png')
 loadSprite('pipe-bottom-right', 'nqQ79eI.png')
 
-scene("game", ({ score }) => {
+scene("game", ({ level, score }) => {
     layers(['bg', 'obj', 'ui'], 'obj')
 
 const map = [
@@ -54,8 +54,8 @@ const levelCfg = {
     '}': [sprite('unboxed'), solid()],
     '(': [sprite('pipe-bottom-left'), solid(), scale(0.5)],
     ')': [sprite('pipe-bottom-right'), solid(), scale(0.5)],
-    '-': [sprite('pipe-top-left'), solid(), scale(0.5)],
-    '+': [sprite('pipe-top-right'), solid(), scale(0.5)],
+    '-': [sprite('pipe-top-left'), solid(), scale(0.5), 'pipe'],
+    '+': [sprite('pipe-top-right'), solid(), scale(0.5), 'pipe'],
     '^': [sprite('evil-shroom'), solid(), 'dangerous'],
     '#': [sprite('mushroom'), solid(), 'mushroom', body()],
 }
@@ -71,7 +71,7 @@ const scoreLabel = add([
   }  
 ])
 
-add([text('level' + 'test', pos(4,6))])
+add([text('level' + parseInt(level + 1), pos(40,6))])
 
 function big() {
     let tiner = 0
@@ -90,7 +90,7 @@ function big() {
             return isBig
         },
         smallify() {
-            this.scale = vec2(1)
+            this.scale = vec2(1) //vector
             CURRENT_JUMP_FORCE = JUMP_FORCE
             timer = 0
             isBig = false
@@ -155,10 +155,19 @@ player.collides('dangerous', (d) => {
 })
 
 player.action(() => {
-  camPos(player.pos)  
+  camPos(player.pos)  //camera postion 
   if (player.pos.y > FALL_DEATH) {
       go('lose', { score: scoreLabel.value})
   }
+})
+
+player.collides('pipe', () => { 
+    keyPress('down', () => {
+     go('game', {
+       level: (level + 1),
+       score: scoreLabel.value  
+     })     
+    })
 })
 
 keyDown('left', () => {
@@ -188,7 +197,7 @@ scene('lose', ({score}) => {
     add([text(score, 32), origin('center'), pos(width()/2, height()/2)])
 })
 
-start("game", { score: 0})
+start("game", { level: 0, score: 0})
 
 
 
